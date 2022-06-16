@@ -15,11 +15,11 @@ public:
     Vehicle();
 
     // getters / setters
-    void setCurrentStreet(std::shared_ptr<Street> street) { _currStreet = street; };
-    void setCurrentDestination(std::shared_ptr<Intersection> destination);
+    void setCurrentStreet(const std::shared_ptr<Street> &street) { _currStreet = street; };
+    void setCurrentDestination(const std::shared_ptr<Intersection> &destination);
 
     // typical behaviour methods
-    void simulate();
+    void simulate() override;
 
     // miscellaneous
     std::shared_ptr<Vehicle> get_shared_this() { return shared_from_this(); }

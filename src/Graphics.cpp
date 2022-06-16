@@ -1,6 +1,5 @@
 #include "Graphics.h"
 #include "Intersection.h"
-#include <iostream>
 #include <opencv2/core.hpp>
 #include <opencv2/highgui.hpp>
 #include <opencv2/imgproc.hpp>
@@ -38,7 +37,7 @@ void Graphics::drawTrafficObjects()
     _images.at(2) = _images.at(0).clone();
 
     // create overlay from all traffic objects
-    for (auto it : _trafficObjects)
+    for (const auto &it : _trafficObjects)
     {
         double posx, posy;
         it->getPosition(posx, posy);
@@ -49,7 +48,7 @@ void Graphics::drawTrafficObjects()
             std::shared_ptr<Intersection> intersection = std::dynamic_pointer_cast<Intersection>(it);
 
             // set color according to traffic light and draw the intersection as a circle
-            cv::Scalar trafficLightColor = intersection->trafficLightIsGreen() == true ? cv::Scalar(0, 255, 0) : cv::Scalar(0, 0, 255);
+            cv::Scalar trafficLightColor = intersection->trafficLightIsGreen() ? cv::Scalar(0, 255, 0) : cv::Scalar(0, 0, 255);
             cv::circle(_images.at(1), cv::Point2d(posx, posy), 25, trafficLightColor, -1);
         }
         else if (it->getType() == ObjectType::objectVehicle)
@@ -57,7 +56,7 @@ void Graphics::drawTrafficObjects()
             cv::RNG rng(it->getID());
             int b = rng.uniform(0, 255);
             int g = rng.uniform(0, 255);
-            int r = sqrt(255 * 255 - g * g - b * b); // ensure that length of color vector is always 255
+            int r{(int) sqrt(255 * 255 - g * g - b * b)}; // ensure that length of color vector is always 255
             cv::Scalar vehicleColor = cv::Scalar(b, g, r);
             cv::circle(_images.at(1), cv::Point2d(posx, posy), 50, vehicleColor, -1);
         }

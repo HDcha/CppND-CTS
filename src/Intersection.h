@@ -19,7 +19,7 @@ public:
     int getSize();
 
     // typical behaviour methods
-    void pushBack(std::shared_ptr<Vehicle> vehicle, std::promise<void> &&promise);
+    void pushBack(const std::shared_ptr<Vehicle> &vehicle, std::promise<void> &&promise);
     void permitEntryToFirstInQueue();
 
 private:
@@ -38,12 +38,12 @@ public:
     void setIsBlocked(bool isBlocked);
 
     // typical behaviour methods
-    void addVehicleToQueue(std::shared_ptr<Vehicle> vehicle);
-    void addStreet(std::shared_ptr<Street> street);
-    std::vector<std::shared_ptr<Street>> queryStreets(std::shared_ptr<Street> incoming); // return pointer to current list of all outgoing streets
-    void simulate();
-    void vehicleHasLeft(std::shared_ptr<Vehicle> vehicle);
-    bool trafficLightIsGreen();
+    void addVehicleToQueue(const std::shared_ptr<Vehicle> &vehicle);
+    void addStreet(const std::shared_ptr<Street> &street);
+    std::vector<std::shared_ptr<Street>> queryStreets(const std::shared_ptr<Street> &incoming); // return pointer to current list of all outgoing streets
+    void simulate() override;
+    void vehicleHasLeft([[maybe_unused]] const std::shared_ptr<Vehicle> &vehicle);
+    static bool trafficLightIsGreen();
 
 private:
     // typical behaviour methods

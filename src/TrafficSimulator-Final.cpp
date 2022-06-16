@@ -1,4 +1,3 @@
-#include <iostream>
 #include <thread>
 #include <vector>
 
@@ -53,7 +52,7 @@ void createTrafficObjects_Paris(std::vector<std::shared_ptr<Street>> &streets, s
 }
 
 // NYC
-void createTrafficObjects_NYC(std::vector<std::shared_ptr<Street>> &streets, std::vector<std::shared_ptr<Intersection>> &intersections, std::vector<std::shared_ptr<Vehicle>> &vehicles, std::string &filename, int nVehicles)
+[[maybe_unused]] void createTrafficObjects_NYC(std::vector<std::shared_ptr<Street>> &streets, std::vector<std::shared_ptr<Intersection>> &intersections, std::vector<std::shared_ptr<Vehicle>> &vehicles, std::string &filename, int nVehicles)
 {
     // assign filename of corresponding city map
     // Note: You can use the webp format instead of jpeg

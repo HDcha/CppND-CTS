@@ -15,7 +15,7 @@ class Vehicle;
 // Also, there should be an std::condition_variable as well as an std::mutex as private members.
 
 template<class T>
-class MessageQueue
+class [[maybe_unused]] MessageQueue
 {
 public:
 private:
@@ -44,7 +44,7 @@ private:
     // send in conjunction with move semantics.
 
     std::condition_variable _condition;
-    std::mutex _mutex;
+    [[maybe_unused]] std::mutex _mutex;
 };
 
 #endif

@@ -14,10 +14,10 @@ int WaitingVehicles::getSize()
 {
     std::lock_guard<std::mutex> lock(_mutex);
 
-    return _vehicles.size();
+    return (int) _vehicles.size();
 }
 
-void WaitingVehicles::pushBack(std::shared_ptr<Vehicle> vehicle, std::promise<void> &&promise)
+void WaitingVehicles::pushBack(const std::shared_ptr<Vehicle> &vehicle, std::promise<void> &&promise)
 {
     std::lock_guard<std::mutex> lock(_mutex);
 
@@ -49,16 +49,16 @@ Intersection::Intersection()
     _isBlocked = false;
 }
 
-void Intersection::addStreet(std::shared_ptr<Street> street)
+void Intersection::addStreet(const std::shared_ptr<Street> &street)
 {
     _streets.push_back(street);
 }
 
-std::vector<std::shared_ptr<Street>> Intersection::queryStreets(std::shared_ptr<Street> incoming)
+std::vector<std::shared_ptr<Street>> Intersection::queryStreets(const std::shared_ptr<Street> &incoming)
 {
     // store all outgoing streets in a vector ...
     std::vector<std::shared_ptr<Street>> outgoings;
-    for (auto it : _streets)
+    for (const auto &it : _streets)
     {
         if (incoming->getID() != it->getID()) // ... except the street making the inquiry
         {
@@ -70,7 +70,7 @@ std::vector<std::shared_ptr<Street>> Intersection::queryStreets(std::shared_ptr<
 }
 
 // adds a new vehicle to the queue and returns once the vehicle is allowed to enter
-void Intersection::addVehicleToQueue(std::shared_ptr<Vehicle> vehicle)
+void Intersection::addVehicleToQueue(const std::shared_ptr<Vehicle> &vehicle)
 {
     std::unique_lock<std::mutex> lck(_mtx);
     std::cout << "Intersection #" << _id << "::addVehicleToQueue: thread id = " << std::this_thread::get_id()
@@ -92,7 +92,7 @@ void Intersection::addVehicleToQueue(std::shared_ptr<Vehicle> vehicle)
     lck.unlock();
 }
 
-void Intersection::vehicleHasLeft(std::shared_ptr<Vehicle> vehicle)
+void Intersection::vehicleHasLeft([[maybe_unused]] const std::shared_ptr<Vehicle> &vehicle)
 {
     //std::cout << "Intersection #" << _id << ": Vehicle #" << vehicle->getID() << " has left." << std::endl;
 
