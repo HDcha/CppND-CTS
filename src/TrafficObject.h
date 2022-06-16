@@ -1,9 +1,9 @@
 #ifndef TRAFFICOBJECT_H
 #define TRAFFICOBJECT_H
 
-#include <vector>
-#include <thread>
 #include <mutex>
+#include <thread>
+#include <vector>
 
 enum ObjectType
 {
@@ -21,9 +21,9 @@ public:
     ~TrafficObject();
 
     // getter and setter
-    int getID() { return _id; }
+    int getID() const { return _id; }
     void setPosition(double x, double y);
-    void getPosition(double &x, double &y);
+    void getPosition(double &x, double &y) const;
     ObjectType getType() { return _type; }
 
     // typical behaviour methods
@@ -32,9 +32,9 @@ public:
 protected:
     ObjectType _type;                 // identifies the class type
     int _id;                          // every traffic object has its own unique id
-    double _posX, _posY;              // vehicle position in pixels
+    double _posX{}, _posY{};          // vehicle position in pixels
     std::vector<std::thread> threads; // holds all threads that have been launched within this object
-    static std::mutex _mtx;           // mutex shared by all traffic objects for protecting cout 
+    static std::mutex _mtx;           // mutex shared by all traffic objects for protecting cout
 
 private:
     static int _idCnt; // global variable for counting object ids

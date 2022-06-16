@@ -1,7 +1,5 @@
-#include <algorithm>
-#include <iostream>
-#include <chrono>
 #include "TrafficObject.h"
+#include <algorithm>
 
 // init static variable
 int TrafficObject::_idCnt = 0;
@@ -14,13 +12,13 @@ void TrafficObject::setPosition(double x, double y)
     _posY = y;
 }
 
-void TrafficObject::getPosition(double &x, double &y)
+void TrafficObject::getPosition(double &x, double &y) const
 {
     x = _posX;
     y = _posY;
 }
 
-TrafficObject::TrafficObject()
+TrafficObject::TrafficObject() : _posX(), _posY()
 {
     _type = ObjectType::noObject;
     _id = _idCnt++;

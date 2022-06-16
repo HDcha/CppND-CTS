@@ -1,8 +1,8 @@
+#include "Vehicle.h"
+#include "Intersection.h"
+#include "Street.h"
 #include <iostream>
 #include <random>
-#include "Street.h"
-#include "Intersection.h"
-#include "Vehicle.h"
 
 Vehicle::Vehicle()
 {
@@ -12,8 +12,7 @@ Vehicle::Vehicle()
     _speed = 400; // m/s
 }
 
-
-void Vehicle::setCurrentDestination(std::shared_ptr<Intersection> destination)
+void Vehicle::setCurrentDestination(const std::shared_ptr<Intersection> &destination)
 {
     // update destination
     _currDestination = destination;
@@ -50,10 +49,10 @@ void Vehicle::drive()
 
         // compute time difference to stop watch
         long timeSinceLastUpdate = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now() - lastUpdate).count();
-        if (timeSinceLastUpdate >= cycleDuration)
+        if (timeSinceLastUpdate >= long(cycleDuration))
         {
             // update position with a constant velocity motion model
-            _posStreet += _speed * timeSinceLastUpdate / 1000;
+            _posStreet += _speed * double(timeSinceLastUpdate) / 1000;
 
             // compute completion rate of current street
             double completion = _posStreet / _currStreet->getLength();
@@ -63,17 +62,17 @@ void Vehicle::drive()
             i2 = _currDestination;
             i1 = i2->getID() == _currStreet->getInIntersection()->getID() ? _currStreet->getOutIntersection() : _currStreet->getInIntersection();
 
-            double x1, y1, x2, y2, xv, yv, dx, dy, l;
+            double x1, y1, x2, y2, xv, yv, dx, dy; // l removed
             i1->getPosition(x1, y1);
             i2->getPosition(x2, y2);
             dx = x2 - x1;
             dy = y2 - y1;
-            l = sqrt((x1 - x2) * (x1 - x2) + (y1 - y2) * (x1 - x2));
+            // l = sqrt((x1 - x2) * (x1 - x2) + (y1 - y2) * (x1 - x2));
             xv = x1 + completion * dx; // new position based on line equation in parameter form
             yv = y1 + completion * dy;
             this->setPosition(xv, yv);
 
-            // check wether halting position in front of destination has been reached
+            // check whether halting position in front of destination has been reached
             if (completion >= 0.9 && !hasEnteredIntersection)
             {
                 // request entry to the current intersection (using async)
@@ -87,18 +86,18 @@ void Vehicle::drive()
                 hasEnteredIntersection = true;
             }
 
-            // check wether intersection has been crossed
+            // check whether intersection has been crossed
             if (completion >= 1.0 && hasEnteredIntersection)
             {
                 // choose next street and destination
                 std::vector<std::shared_ptr<Street>> streetOptions = _currDestination->queryStreets(_currStreet);
                 std::shared_ptr<Street> nextStreet;
-                if (streetOptions.size() > 0)
+                if (!streetOptions.empty())
                 {
                     // pick one street at random and query intersection to enter this street
                     std::random_device rd;
                     std::mt19937 eng(rd());
-                    std::uniform_int_distribution<> distr(0, streetOptions.size() - 1);
+                    std::uniform_int_distribution<> distr(0, int(streetOptions.size()) - 1);
                     nextStreet = streetOptions.at(distr(eng));
                 }
                 else
@@ -106,9 +105,9 @@ void Vehicle::drive()
                     // this street is a dead-end, so drive back the same way
                     nextStreet = _currStreet;
                 }
-                
+
                 // pick the one intersection at which the vehicle is currently not
-                std::shared_ptr<Intersection> nextIntersection = nextStreet->getInIntersection()->getID() == _currDestination->getID() ? nextStreet->getOutIntersection() : nextStreet->getInIntersection(); 
+                std::shared_ptr<Intersection> nextIntersection = nextStreet->getInIntersection()->getID() == _currDestination->getID() ? nextStreet->getOutIntersection() : nextStreet->getInIntersection();
 
                 // send signal to intersection that vehicle has left the intersection
                 _currDestination->vehicleHasLeft(get_shared_this());

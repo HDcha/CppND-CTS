@@ -1,7 +1,7 @@
 #ifndef STREET_H
 #define STREET_H
-
 #include "TrafficObject.h"
+#include <memory>
 
 // forward declaration to avoid include cycle
 class Intersection;
@@ -13,9 +13,9 @@ public:
     Street();
 
     // getters / setters
-    double getLength() { return _length; }
-    void setInIntersection(std::shared_ptr<Intersection> in);
-    void setOutIntersection(std::shared_ptr<Intersection> out);
+    double getLength() const { return _length; }
+    void setInIntersection(const std::shared_ptr<Intersection> &in);
+    void setOutIntersection(const std::shared_ptr<Intersection> &out);
     std::shared_ptr<Intersection> getOutIntersection() { return _interOut; }
     std::shared_ptr<Intersection> getInIntersection() { return _interIn; }
 

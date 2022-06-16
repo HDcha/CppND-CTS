@@ -1,11 +1,11 @@
-#include <iostream>
-#include <thread>
 #include <chrono>
 #include <future>
+#include <iostream>
 #include <random>
+#include <thread>
 
-#include "Street.h"
 #include "Intersection.h"
+#include "Street.h"
 #include "Vehicle.h"
 
 /* Implementation of class "WaitingVehicles" */
@@ -14,10 +14,10 @@ int WaitingVehicles::getSize()
 {
     std::lock_guard<std::mutex> lock(_mutex);
 
-    return _vehicles.size();
+    return (int) _vehicles.size();
 }
 
-void WaitingVehicles::pushBack(std::shared_ptr<Vehicle> vehicle, std::promise<void> &&promise)
+void WaitingVehicles::pushBack(const std::shared_ptr<Vehicle> &vehicle, std::promise<void> &&promise)
 {
     std::lock_guard<std::mutex> lock(_mutex);
 
@@ -49,16 +49,16 @@ Intersection::Intersection()
     _isBlocked = false;
 }
 
-void Intersection::addStreet(std::shared_ptr<Street> street)
+void Intersection::addStreet(const std::shared_ptr<Street> &street)
 {
     _streets.push_back(street);
 }
 
-std::vector<std::shared_ptr<Street>> Intersection::queryStreets(std::shared_ptr<Street> incoming)
+std::vector<std::shared_ptr<Street>> Intersection::queryStreets(const std::shared_ptr<Street> &incoming)
 {
     // store all outgoing streets in a vector ...
     std::vector<std::shared_ptr<Street>> outgoings;
-    for (auto it : _streets)
+    for (const auto &it : _streets)
     {
         if (incoming->getID() != it->getID()) // ... except the street making the inquiry
         {
@@ -70,10 +70,11 @@ std::vector<std::shared_ptr<Street>> Intersection::queryStreets(std::shared_ptr<
 }
 
 // adds a new vehicle to the queue and returns once the vehicle is allowed to enter
-void Intersection::addVehicleToQueue(std::shared_ptr<Vehicle> vehicle)
+void Intersection::addVehicleToQueue(const std::shared_ptr<Vehicle> &vehicle)
 {
     std::unique_lock<std::mutex> lck(_mtx);
-    std::cout << "Intersection #" << _id << "::addVehicleToQueue: thread id = " << std::this_thread::get_id() << std::endl;
+    std::cout << "Intersection #" << _id << "::addVehicleToQueue: thread id = " << std::this_thread::get_id()
+              << std::endl;
     lck.unlock();
 
     // add new vehicle to the end of the waiting line
@@ -85,13 +86,13 @@ void Intersection::addVehicleToQueue(std::shared_ptr<Vehicle> vehicle)
     ftrVehicleAllowedToEnter.wait();
     lck.lock();
     std::cout << "Intersection #" << _id << ": Vehicle #" << vehicle->getID() << " is granted entry." << std::endl;
-    
+
     // FP.6b : use the methods TrafficLight::getCurrentPhase and TrafficLight::waitForGreen to block the execution until the traffic light turns green.
 
     lck.unlock();
 }
 
-void Intersection::vehicleHasLeft(std::shared_ptr<Vehicle> vehicle)
+void Intersection::vehicleHasLeft([[maybe_unused]] const std::shared_ptr<Vehicle> &vehicle)
 {
     //std::cout << "Intersection #" << _id << ": Vehicle #" << vehicle->getID() << " has left." << std::endl;
 
@@ -139,13 +140,13 @@ void Intersection::processVehicleQueue()
 
 bool Intersection::trafficLightIsGreen()
 {
-   // please include this part once you have solved the final project tasks
-   /*
-   if (_trafficLight.getCurrentPhase() == TrafficLightPhase::green)
-       return true;
-   else
-       return false;
-   */
+    // please include this part once you have solved the final project tasks
+    /*
+    if (_trafficLight.getCurrentPhase() == TrafficLightPhase::green)
+        return true;
+    else
+        return false;
+    */
 
-  return true; // makes traffic light permanently green
-} 
+    return true; // makes traffic light permanently green
+}
