@@ -1,7 +1,7 @@
 #ifndef STREET_H
 #define STREET_H
-
 #include "TrafficObject.h"
+#include <memory>
 
 // forward declaration to avoid include cycle
 class Intersection;

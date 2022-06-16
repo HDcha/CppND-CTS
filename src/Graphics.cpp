@@ -1,9 +1,9 @@
-#include <iostream>
-#include <opencv2/core.hpp>
-#include <opencv2/imgproc.hpp>
-#include <opencv2/highgui.hpp>
 #include "Graphics.h"
 #include "Intersection.h"
+#include <iostream>
+#include <opencv2/core.hpp>
+#include <opencv2/highgui.hpp>
+#include <opencv2/imgproc.hpp>
 
 void Graphics::simulate()
 {
@@ -57,8 +57,8 @@ void Graphics::drawTrafficObjects()
             cv::RNG rng(it->getID());
             int b = rng.uniform(0, 255);
             int g = rng.uniform(0, 255);
-            int r = sqrt(255*255 - g*g - b*b); // ensure that length of color vector is always 255
-            cv::Scalar vehicleColor = cv::Scalar(b,g,r);
+            int r = sqrt(255 * 255 - g * g - b * b); // ensure that length of color vector is always 255
+            cv::Scalar vehicleColor = cv::Scalar(b, g, r);
             cv::circle(_images.at(1), cv::Point2d(posx, posy), 50, vehicleColor, -1);
         }
     }
@@ -66,10 +66,10 @@ void Graphics::drawTrafficObjects()
     float opacity = 0.85;
     cv::addWeighted(_images.at(1), opacity, _images.at(0), 1.0 - opacity, 0, _images.at(2));
 
-    // The following code allows for resizing in case of graphics window taking up a large space 
+    // The following code allows for resizing in case of graphics window taking up a large space
     cv::Mat img;
-    cv::resize(_images.at(2), img, cv::Size(1040,720),0,0,1);
+    cv::resize(_images.at(2), img, cv::Size(1040, 720), 0, 0, 1);
     cv::imshow(_windowName, img);
-    
+
     cv::waitKey(33);
 }

@@ -1,8 +1,8 @@
+#include "Vehicle.h"
+#include "Intersection.h"
+#include "Street.h"
 #include <iostream>
 #include <random>
-#include "Street.h"
-#include "Intersection.h"
-#include "Vehicle.h"
 
 Vehicle::Vehicle()
 {
@@ -11,7 +11,6 @@ Vehicle::Vehicle()
     _type = ObjectType::objectVehicle;
     _speed = 400; // m/s
 }
-
 
 void Vehicle::setCurrentDestination(std::shared_ptr<Intersection> destination)
 {
@@ -106,9 +105,9 @@ void Vehicle::drive()
                     // this street is a dead-end, so drive back the same way
                     nextStreet = _currStreet;
                 }
-                
+
                 // pick the one intersection at which the vehicle is currently not
-                std::shared_ptr<Intersection> nextIntersection = nextStreet->getInIntersection()->getID() == _currDestination->getID() ? nextStreet->getOutIntersection() : nextStreet->getInIntersection(); 
+                std::shared_ptr<Intersection> nextIntersection = nextStreet->getInIntersection()->getID() == _currDestination->getID() ? nextStreet->getOutIntersection() : nextStreet->getInIntersection();
 
                 // send signal to intersection that vehicle has left the intersection
                 _currDestination->vehicleHasLeft(get_shared_this());
