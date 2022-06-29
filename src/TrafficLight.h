@@ -27,22 +27,33 @@ private:
 // can be either „red“ or „green“. Also, add the private method „void cycleThroughPhases()“.
 // Furthermore, there shall be the private member _currentPhase which can take „red“ or „green“ as its value.
 
-class TrafficLight
+enum TrafficLightPhase
+{
+    red,
+    green
+};
+
+class TrafficLight : public TrafficObject
 {
 public:
     // constructor / desctructor
+    TrafficLight();
 
     // getters / setters
+    [[maybe_unused]] TrafficLightPhase getCurrentPhase();
 
     // typical behaviour methods
+    [[maybe_unused]] void waitForGreen();
+    void simulate() override;
 
 private:
     // typical behaviour methods
+    [[maybe_unused]] void cycleThroughPhases();
 
     // FP.4b : create a private member of type MessageQueue for messages of type TrafficLightPhase
     // and use it within the infinite loop to push each new TrafficLightPhase into it by calling
     // send in conjunction with move semantics.
-
+    TrafficLightPhase _currentPhase;
     std::condition_variable _condition;
     [[maybe_unused]] std::mutex _mutex;
 };
