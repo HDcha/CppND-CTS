@@ -1,5 +1,6 @@
 #include "TrafficLight.h"
 #include <iostream>
+#include <mutex>
 #include <random>
 
 /* Implementation of class "MessageQueue" */
@@ -41,14 +42,39 @@ TrafficLight::TrafficLight()
 
 void TrafficLight::simulate()
 {
-    // FP.2b : Finally, the private method „cycleThroughPhases“ should be started in a thread when the public method „simulate“ is called. To do this, use the thread queue in the base class. 
+    // FP.2b : Finally, the private method „cycleThroughPhases“ should be started in a thread when the public method „simulate“ is called. To do this, use the thread queue in the base class.
+    std::thread cycle_through_phases_thread(&TrafficLight::cycleThroughPhases, this);
+    std::lock_guard<std::mutex> lock_guard(_mutex);
+    this->threads.emplace_back(std::move(cycle_through_phases_thread));
 }
 
 // virtual function which is executed in a thread
-[[maybe_unused]] void TrafficLight::cycleThroughPhases()
+void TrafficLight::cycleThroughPhases()
 {
     // FP.2a : Implement the function with an infinite loop that measures the time between two loop cycles
     // and toggles the current phase of the traffic light between red and green and sends an update method
     // to the message queue using move semantics. The cycle duration should be a random value between 4 and 6 seconds.
     // Also, the while-loop should use std::this_thread::sleep_for to wait 1ms between two cycles.
+
+    //initialize clock and lock
+    auto time_mark = std::chrono::system_clock::now();
+    std::unique_lock<std::mutex> lock(_mutex, std::defer_lock);
+
+    // initialize random number generator
+    std::random_device dev;
+    std::mt19937 random_number_generator(dev());
+    std::uniform_int_distribution<> distribution_ms(4000, 6000);
+    auto random_interval_ms{distribution_ms(random_number_generator)};
+
+    // start cycling phase
+    while (true) {
+        if (std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now() - time_mark).count() > random_interval_ms) {
+            random_interval_ms = distribution_ms(random_number_generator);
+            lock.lock();
+            _currentPhase = _currentPhase == TrafficLightPhase::green ? TrafficLightPhase::red : TrafficLightPhase::green;
+            lock.unlock();
+            time_mark = std::chrono::system_clock::now();
+        }
+        std::this_thread::sleep_for(std::chrono::milliseconds(1));
+    }
 }

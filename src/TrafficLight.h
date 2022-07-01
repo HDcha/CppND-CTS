@@ -55,7 +55,7 @@ private:
     // send in conjunction with move semantics.
     TrafficLightPhase _currentPhase;
     std::condition_variable _condition;
-    [[maybe_unused]] std::mutex _mutex;
+    std::mutex _mutex;
 };
 
 #endif
