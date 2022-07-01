@@ -72,7 +72,7 @@ std::vector<std::shared_ptr<Street>> Intersection::queryStreets(const std::share
 // adds a new vehicle to the queue and returns once the vehicle is allowed to enter
 void Intersection::addVehicleToQueue(const std::shared_ptr<Vehicle> &vehicle)
 {
-    std::unique_lock<std::mutex> lck(_mtx);
+    std::unique_lock<std::mutex> lck(_cout_mtx);
     std::cout << "Intersection #" << _id << "::addVehicleToQueue: thread id = " << std::this_thread::get_id()
               << std::endl;
     lck.unlock();
