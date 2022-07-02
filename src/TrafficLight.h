@@ -20,16 +20,16 @@ enum TrafficLightPhase
 // Also, the class should define an std::dequeue called _queue, which stores objects of type TrafficLightPhase.
 // Also, there should be an std::condition_variable as well as an std::mutex as private members.
 
-template<class T>
-class [[maybe_unused]] MessageQueue
+template<class MessageType>
+class MessageQueue
 {
 public:
-    void send(TrafficLightPhase &&traffic_light_phase){};
-    TrafficLightPhase &&receive(){};
+    void send(MessageType &&msg);
+    MessageType &&receive();
 
 private:
-    std::condition_variable _condition_variable;
-    std::deque<TrafficLightPhase> _queue;
+    std::condition_variable _condition;
+    std::deque<MessageType> _queue;
     std::mutex _mutex;
 };
 
@@ -50,15 +50,16 @@ public:
 
     // typical behaviour methods
     [[maybe_unused]] void waitForGreen();
-    void simulate() override;
+    [[maybe_unused]] void simulate() override;
 
 private:
     // typical behaviour methods
-    [[maybe_unused]] void cycleThroughPhases();
+    void cycleThroughPhases();
 
     // FP.4b : create a private member of type MessageQueue for messages of type TrafficLightPhase
     // and use it within the infinite loop to push each new TrafficLightPhase into it by calling
     // send in conjunction with move semantics.
+    MessageQueue<TrafficLightPhase> _traffic_light_queue;
     TrafficLightPhase _currentPhase;
     std::condition_variable _condition;
     std::mutex _mutex;
