@@ -1,6 +1,7 @@
 #ifndef INTERSECTION_H
 #define INTERSECTION_H
 
+#include "TrafficLight.h"
 #include "TrafficObject.h"
 #include <future>
 #include <memory>
@@ -43,7 +44,7 @@ public:
     std::vector<std::shared_ptr<Street>> queryStreets(const std::shared_ptr<Street> &incoming); // return pointer to current list of all outgoing streets
     void simulate() override;
     void vehicleHasLeft([[maybe_unused]] const std::shared_ptr<Vehicle> &vehicle);
-    static bool trafficLightIsGreen();
+    bool trafficLightIsGreen();
 
 private:
     // typical behaviour methods
@@ -52,7 +53,8 @@ private:
     // private members
     std::vector<std::shared_ptr<Street>> _streets; // list of all streets connected to this intersection
     WaitingVehicles _waitingVehicles;              // list of all vehicles and their associated promises waiting to enter the intersection
-    bool _isBlocked;                               // flag indicating wether the intersection is blocked by a vehicle
+    bool _isBlocked;                               // flag indicating whether the intersection is blocked by a vehicle
+    TrafficLight _trafficLight;                    // simulate the traffic-light-cycle of the intersection
 };
 
 #endif

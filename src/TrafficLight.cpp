@@ -44,7 +44,7 @@ TrafficLight::TrafficLight()
     }
 }
 
-[[maybe_unused]] TrafficLightPhase TrafficLight::getCurrentPhase()
+TrafficLightPhase TrafficLight::getCurrentPhase()
 {
     return _currentPhase;
 }

@@ -50,8 +50,8 @@ public:
     [[maybe_unused]] TrafficLightPhase getCurrentPhase();
 
     // typical behaviour methods
-    [[maybe_unused]] void waitForGreen();
-    [[maybe_unused]] void simulate() override;
+    void waitForGreen(); //
+    void simulate() override;
 
 private:
     // typical behaviour methods
