@@ -21,7 +21,7 @@ public:
     ~TrafficObject();
 
     // getter and setter
-    int getID() const { return _id; }
+    [[nodiscard]] int getID() const { return _id; }
     void setPosition(double x, double y);
     void getPosition(double &x, double &y) const;
     ObjectType getType() { return _type; }

@@ -25,7 +25,8 @@ class MessageQueue
 {
 public:
     void send(MessageType &&msg);
-    MessageType &&receive();
+    // Get the next message. If not available: first wait unit it arrives.
+    MessageType receive();
 
 private:
     std::condition_variable _condition;
