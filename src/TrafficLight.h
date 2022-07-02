@@ -9,16 +9,29 @@
 // forward declarations to avoid include cycle
 class Vehicle;
 
+enum TrafficLightPhase
+{
+    red,
+    green
+};
+
 // FP.3 Define a class „MessageQueue“ which has the public methods send and receive.
 // Send should take an rvalue reference of type TrafficLightPhase whereas receive should return this type.
 // Also, the class should define an std::dequeue called _queue, which stores objects of type TrafficLightPhase.
 // Also, there should be an std::condition_variable as well as an std::mutex as private members.
 
-template<class T>
-class [[maybe_unused]] MessageQueue
+template<class MessageType>
+class MessageQueue
 {
 public:
+    void send(MessageType &&msg);
+    // Get the next message. If not available: first wait unit it arrives.
+    MessageType receive();
+
 private:
+    std::condition_variable _condition;
+    std::deque<MessageType> _queue;
+    std::mutex _mutex;
 };
 
 // FP.1 : Define a class „TrafficLight“ which is a child class of TrafficObject.
@@ -27,24 +40,30 @@ private:
 // can be either „red“ or „green“. Also, add the private method „void cycleThroughPhases()“.
 // Furthermore, there shall be the private member _currentPhase which can take „red“ or „green“ as its value.
 
-class TrafficLight
+class TrafficLight : public TrafficObject
 {
 public:
     // constructor / desctructor
+    TrafficLight();
 
     // getters / setters
+    [[maybe_unused]] TrafficLightPhase getCurrentPhase();
 
     // typical behaviour methods
+    void waitForGreen(); //
+    void simulate() override;
 
 private:
     // typical behaviour methods
+    void cycleThroughPhases();
 
     // FP.4b : create a private member of type MessageQueue for messages of type TrafficLightPhase
     // and use it within the infinite loop to push each new TrafficLightPhase into it by calling
     // send in conjunction with move semantics.
-
+    MessageQueue<TrafficLightPhase> _traffic_light_queue;
+    TrafficLightPhase _currentPhase;
     std::condition_variable _condition;
-    [[maybe_unused]] std::mutex _mutex;
+    std::mutex _mutex;
 };
 
 #endif
